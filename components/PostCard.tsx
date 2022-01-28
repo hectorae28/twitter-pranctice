@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 import { Text, View } from './Themed';
 import React from 'react';
 
-const FeedCard = (props:any) => {
+const PostCard = (props:any) => {
   return (
     <View style={styles.cardContainer}>
         <Text
@@ -22,7 +22,7 @@ const FeedCard = (props:any) => {
   );
 };
 
-export default FeedCard;
+export default PostCard;
 
 const styles = StyleSheet.create({
     cardContainer:{
