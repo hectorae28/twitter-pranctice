@@ -5,50 +5,52 @@ import PostCard from '../components/PostCard';
 import { Text, View } from '../components/Themed';
 
 export default function Profile() {
-  const userUrl='https://jsonplaceholder.typicode.com/users/1'
-  const postsUrl='https://jsonplaceholder.typicode.com/posts/'
   const [user, setUser] = useState(null);
-  /* const [post, setPost] = useState(null); */
+  const [post, setPost] = useState(null);
   const getData=()=>{
-     axios.get(userUrl).then((response)=>{
-      console.log('getdata')
+     axios.get('https://jsonplaceholder.typicode.com/users/2').then((response)=>{
       setUser(response.data)
     }).catch((error)=>{
       console.log("fail axios :",error);
     })
-    /* axios.get(postsUrl).then((response)=>{
-      console.log('getdate')
+    axios.get('https://jsonplaceholder.typicode.com/posts/').then((response)=>{
+      setPost(response.data)
     }).catch((error)=>{
       console.log("fail axios :",error);
-    })  */
+    }) 
   }
   useEffect(()=>{
     getData()
-  })
+  },[])
   
   
-  if (!user)return (
+  if (!user||!post)return (
     <View style={styles.container}>
       <Text  style={styles.title}>Loading...</Text>
     </View>
   )
   return (
     <View style={styles.container}>
-       <Text style={styles.title}>{user.name}</Text>
+       <Text style={styles.title}>{user?.name}</Text>
       <Text style={styles.username}>{user?.username}</Text>
       <Text style={styles.company}>{user?.company.name}</Text> 
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-       {/* <FlatList
+      <FlatList
         data={post}
         initialNumToRender={50}
         keyExtractor={(item: { key: any; }) => item.id}
-        renderItem={({ item })=><PostCard {...item}/>}
-      />  */}
+        renderItem={({ item })=>(
+          item.userId==user.id?
+            <PostCard {...item}/>
+            :null
+        )
+        }
+      />
       
     </View>
   );
 }
-
+//
 const styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -18,6 +18,8 @@ import Feed from '../screens/Feed';
 import Profile from '../screens/Profile';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
+import PostDetails from '../screens/PostDetails';
+import UserDetails from '../screens/UserDetails';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -42,6 +44,8 @@ function RootNavigator() {
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name="Modal" component={ModalScreen} />
+        <Stack.Screen name="PostDetails" component={PostDetails} />
+        <Stack.Screen name="UserDetails" component={UserDetails} />
       </Stack.Group>
     </Stack.Navigator>
   );

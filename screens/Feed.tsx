@@ -1,56 +1,36 @@
+import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { FlatList, StyleSheet } from 'react-native';
+import { FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import PostCard from '../components/PostCard';
-
 import { Text, View } from '../components/Themed';
 import { RootTabScreenProps } from '../types';
 
 export default function Feed({ navigation }: RootTabScreenProps<'TabOne'>) {
-  const url='https://jsonplaceholder.typicode.com/posts/'
-  const [posts, setPosts] = useState(null);
-  let post
+  const [post, setPost] = useState(null);
+  const router=useNavigation()
+  
   const getData=()=>{
-    axios.get(url).then((response)=>{
-      post=response.data
-      console.log('getxd',post)
+    axios.get('https://jsonplaceholder.typicode.com/posts/').then((response)=>{
+      setPost(response.data)
     }).catch((error)=>{
       console.log("fail axios :",error);
-    }).finally(function () {
-      // always executed
-      alert('Finally called');
-      return null
-    });
-  } 
-  const getDataUsingAsyncAwaitGetCall = async () => {
-    try {
-      const response = await axios.get(
-        'https://jsonplaceholder.typicode.com/posts/',
-      );
-      alert(JSON.stringify(response.data));
-      post=response.data
-      console.log(post)
-    } catch (error) {
-      // handle error
-      alert(error.message);
-    }
-  };
+    })
+  }
   useEffect(()=>{
-    getDataUsingAsyncAwaitGetCall()
     getData()
-  })
+  },[])
   
   if (!post)return (
     <View style={styles.container}>
       <Text  style={styles.title}>Loading...</Text>
     </View>
   )
-
   return (
     <View style={styles.container}>
-      {/* <FlatList
+       <FlatList
         data={post}
-        initialNumToRender={50}
+        initialNumToRender={20}
         keyExtractor={(item: { key: any; }) => item.id}
         ListHeaderComponent={()=>{
           return(
@@ -60,9 +40,20 @@ export default function Feed({ navigation }: RootTabScreenProps<'TabOne'>) {
             </View>
           )
         }}
-        renderItem={({ item })=><PostCard {...item}/>}
-      /> */}
-      {post.map((item:any)=><PostCard {...item}/>)}
+        renderItem={({ item }:any)=>(
+          <TouchableOpacity onPress={()=>
+            router.navigate('PostDetails',{
+              title:item.title,
+              body:item.body,
+              id:item.id,
+              userId:item.userId
+            })
+          }>
+            <PostCard {...item} />
+          </TouchableOpacity>
+          
+        )}
+      />
     </View>
   );
 }
