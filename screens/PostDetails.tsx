@@ -1,25 +1,21 @@
 import { StyleSheet } from 'react-native';
 import { Text, View } from '../components/Themed';
 import React, { useEffect, useState } from 'react';
+import {useDispatch, useSelector} from 'react-redux'
+import {getUsers} from '../store/users/action'
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 
 const PostDetails = ({route}:any) => {
   const {title,body,userId}=route.params
-  const [user, setUser] = useState(null);
+  const dispatch=useDispatch()
+  const {loading,error,user}=useSelector(state=>state.users)
   const navigation=useNavigation()
-  const getData=()=>{
-    axios.get(`https://jsonplaceholder.typicode.com/users/${userId}`).then((response)=>{
-      setUser(response.data)
-    }).catch((error)=>{
-      console.log("fail axios :",error);
-    })
-  }
   useEffect(()=>{
-    getData()
+    dispatch(getUsers(userId))
   },[])
 
-  if (!user)return (
+  if (loading)return (
     <View style={styles.container}>
       <Text  style={styles.title}>Loading...</Text>
     </View>

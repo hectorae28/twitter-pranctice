@@ -1,22 +1,26 @@
-import { CREATE, GET_DATA, DATA_ERR } from './action-types'
+import {GET_USERS,GET_MY_USERS, DATA_ERR } from './action-types'
 import axios from 'axios';
 
 const initialState = {
-    posts:[],
+    user:[],
     loading:true
 }
 
-const PostReducer = (
+const UserReducer = (
   state = initialState,
   action
 ) => {
   switch (action.type) {
-    case CREATE:
-      return { ...state, ...{ post: payload } }
-    case GET_DATA:
+    case GET_USERS:
       return {
         ...state,
-        post:action.payload,
+        user:action.payload,
+        loading:false
+        }
+    case GET_MY_USERS:
+      return {
+        ...state,
+        user:action.payload,
         loading:false
         }
     case DATA_ERR:
@@ -29,4 +33,5 @@ const PostReducer = (
   }
 }
 
-export default PostReducer
+
+export default UserReducer
