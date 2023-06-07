@@ -1,30 +1,27 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { FlatList, ScrollView, StyleSheet } from 'react-native';
+import { FlatList, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux'
+import {getMyUsers} from '../store/users/action'
 import PostCard from '../components/PostCard';
 import { Text, View } from '../components/Themed';
 
 export default function Profile() {
-  const [user, setUser] = useState(null);
-  const [post, setPost] = useState(null);
-  const getData=()=>{
-     axios.get('https://jsonplaceholder.typicode.com/users/2').then((response)=>{
-      setUser(response.data)
-    }).catch((error)=>{
-      console.log("fail axios :",error);
-    })
-    axios.get('https://jsonplaceholder.typicode.com/posts/').then((response)=>{
-      setPost(response.data)
-    }).catch((error)=>{
-      console.log("fail axios :",error);
-    }) 
-  }
+  const router=useNavigation()
+  const dispatch=useDispatch()
+  const User_Data=useSelector(state=>state.users)
+  const Posts_data=useSelector(state=>state.posts) 
+  const {loading,error,user} = User_Data
+  console.log(user.id)
+  const {post}=Posts_data
+  
   useEffect(()=>{
-    getData()
-  },[])
+    dispatch(getMyUsers())
+  },[dispatch])
+
   
-  
-  if (!user||!post)return (
+  if (loading)return (
     <View style={styles.container}>
       <Text  style={styles.title}>Loading...</Text>
     </View>
@@ -41,7 +38,16 @@ export default function Profile() {
         keyExtractor={(item: { key: any; }) => item.id}
         renderItem={({ item })=>(
           item.userId==user.id?
-            <PostCard {...item}/>
+            <TouchableOpacity onPress={()=>
+              router.navigate('PostDetails',{
+                title:item.title,
+                body:item.body,
+                id:item.id,
+                userId:item.userId
+              })
+            }>
+              <PostCard {...item} />
+            </TouchableOpacity>
             :null
         )
         }

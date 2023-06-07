@@ -2,26 +2,23 @@ import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
+import {getPosts} from '../store/posts/action'
 import PostCard from '../components/PostCard';
 import { Text, View } from '../components/Themed';
 import { RootTabScreenProps } from '../types';
 
 export default function Feed({ navigation }: RootTabScreenProps<'TabOne'>) {
-  const [post, setPost] = useState(null);
   const router=useNavigation()
-  
-  const getData=()=>{
-    axios.get('https://jsonplaceholder.typicode.com/posts/').then((response)=>{
-      setPost(response.data)
-    }).catch((error)=>{
-      console.log("fail axios :",error);
-    })
-  }
+  const { loading, error, post }= useSelector(state=>state.posts)
+  const dispatch=useDispatch()
   useEffect(()=>{
-    getData()
-  },[])
+    //post!=[]&&dispatch(getPosts())
+    dispatch(getPosts())
+    console.log('res')
+  },[dispatch])
   
-  if (!post)return (
+  if (loading)return (
     <View style={styles.container}>
       <Text  style={styles.title}>Loading...</Text>
     </View>
